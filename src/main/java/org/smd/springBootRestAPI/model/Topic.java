@@ -13,7 +13,7 @@ public class Topic {
 	private TopicStatus status = TopicStatus.NOT_REPLIED;
 	private User author;
 	private Course course;
-	private List<Response> respostas = new ArrayList<>();
+	private List<Response> responses = new ArrayList<>();
 
 
 	public Topic(String title, String message, Course course) {
@@ -55,20 +55,20 @@ public class Topic {
 		this.id = id;
 	}
 
-	public String getTitulo() {
-		return titulo;
+	public String getTitle() {
+		return title;
 	}
 
-	public void setTitulo(String titulo) {
-		this.titulo = titulo;
+	public void setTitle(String title) {
+		this.title = title;
 	}
 
-	public String getMensagem() {
-		return mensagem;
+	public String getMessage() {
+		return message;
 	}
 
-	public void setMensagem(String mensagem) {
-		this.mensagem = mensagem;
+	public void setMessage(String message) {
+		this.message = message;
 	}
 
 	public LocalDateTime getDataCriacao() {
@@ -79,36 +79,36 @@ public class Topic {
 		this.dataCriacao = dataCriacao;
 	}
 
-	public StatusTopico getStatus() {
+	public TopicStatus getStatus() {
 		return status;
 	}
 
-	public void setStatus(StatusTopico status) {
+	public void setStatus(TopicStatus status) {
 		this.status = status;
 	}
 
-	public Usuario getAutor() {
-		return autor;
+	public User getAutor() {
+		return author;
 	}
 
-	public void setAutor(Usuario autor) {
-		this.autor = autor;
+	public void setAutor(User author) {
+		this.author = author;
 	}
 
-	public Curso getCurso() {
-		return curso;
+	public Course getCourse() {
+		return course;
 	}
 
-	public void setCurso(Curso curso) {
-		this.curso = curso;
+	public void setCourse(Course course) {
+		this.course = course;
 	}
 
-	public List<Resposta> getRespostas() {
-		return respostas;
+	public List<Response> getResponse() {
+		return responses;
 	}
 
-	public void setRespostas(List<Resposta> respostas) {
-		this.respostas = respostas;
+	public void setResponse(List<Response> responses) {
+		this.responses = responses;
 	}
 
 }

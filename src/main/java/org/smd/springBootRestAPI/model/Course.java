@@ -6,9 +6,9 @@ public class Course {
 	private String name;
 	private String category;
 
-	public Course(String nome, String categoria) {
-		this.name = nome;
-		this.name= categoria;
+	public Course(String name, String category) {
+		this.name = name;
+		this.category= category;
 	}
 	
 	@Override
