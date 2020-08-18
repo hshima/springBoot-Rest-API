@@ -4,17 +4,40 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+
+@Entity
 public class Topic {
 
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	private String title;
 	private String message;
-	private LocalDateTime dataCriacao = LocalDateTime.now();
+	private LocalDateTime creationDate = LocalDateTime.now();
+	
+	@Enumerated(EnumType.STRING)
 	private TopicStatus status = TopicStatus.NOT_REPLIED;
+
+	@ManyToOne
 	private User author;
+	
+	@ManyToOne
 	private Course course;
+	
+	@OneToMany(mappedBy = "topic")
 	private List<Response> responses = new ArrayList<>();
 
+
+	public Topic() {
+	}
 
 	public Topic(String title, String message, Course course) {
 		this.title = title;
@@ -71,12 +94,12 @@ public class Topic {
 		this.message = message;
 	}
 
-	public LocalDateTime getDataCriacao() {
-		return dataCriacao;
+	public LocalDateTime getCreationDate() {
+		return creationDate;
 	}
 
-	public void setDataCriacao(LocalDateTime dataCriacao) {
-		this.dataCriacao = dataCriacao;
+	public void setDataCriacao(LocalDateTime creationDate) {
+		this.creationDate = creationDate;
 	}
 
 	public TopicStatus getStatus() {
