@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -82,6 +83,7 @@ public class TopicsController {
 	}
 	
 	@PutMapping("/{id}")
+	@Transactional
 	public ResponseEntity<TopicDTO> update(@PathVariable Long id, @RequestBody @Valid ToUpdateTopic toUpdateTopic) { // Created a new DTO for input validation
 		
 		Optional<Topic> optional = topicsRepository.findById(id);
@@ -95,5 +97,15 @@ public class TopicsController {
 				.notFound() // return a 404 - Not Found response
 				.build(); // Doesn't gives a body as response
 	}
-
+	
+	@DeleteMapping("/{id}")
+	@Transactional
+	public ResponseEntity<?> remove(@PathVariable Long id) {
+		Optional<Topic> optional = topicsRepository.findById(id);
+		if(optional.isPresent()) {
+			topicsRepository.deleteById(id);
+			return ResponseEntity.ok().build();
+		}
+		return ResponseEntity.notFound().build();
+	}
 }
