@@ -6,6 +6,7 @@ import java.util.Optional;
 
 import javax.validation.Valid;
 
+import org.smd.springBootRestAPI.controller.dto.ToUpdateTopic;
 import org.smd.springBootRestAPI.controller.dto.TopicDTO;
 import org.smd.springBootRestAPI.controller.dto.TopicForm;
 import org.smd.springBootRestAPI.model.Topic;
@@ -18,6 +19,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestPart;
@@ -61,7 +63,7 @@ public class TopicsController {
 	@PostMapping
 	@Transactional
 	public ResponseEntity<TopicDTO> register(@RequestBody @Valid // @Valid searches if topicForm has attribute
-																// validation
+																 // validation
 											TopicForm topicForm, // ResponseEntity<TopicDTO> is a Http dealer type with a specified generic
 																 // validation
 											UriComponentsBuilder uriBuilder) {
@@ -77,6 +79,21 @@ public class TopicsController {
 		return ResponseEntity.created(uri) // created() returns a HTTP 201 with the location e requires an URI with call
 											// for object representation of the created object
 				.body(new TopicDTO(topic)); // builds the body of the response
+	}
+	
+	@PutMapping("/{id}")
+	public ResponseEntity<TopicDTO> update(@PathVariable Long id, @RequestBody @Valid ToUpdateTopic toUpdateTopic) { // Created a new DTO for input validation
+		
+		Optional<Topic> optional = topicsRepository.findById(id);
+		
+		if(optional.isPresent()) {
+			Topic topic = toUpdateTopic.update(id, topicsRepository); // passes the id and injects a repository for Topic processing
+			return ResponseEntity // From a class that deals with HTTP response
+					.ok(new TopicDTO(topic)); // returns a 200 - OK, sending a Topic instance 
+		}
+		return ResponseEntity // From a class that deals with HTTP response
+				.notFound() // return a 404 - Not Found response
+				.build(); // Doesn't gives a body as response
 	}
 
 }
