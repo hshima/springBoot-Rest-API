@@ -1,7 +1,6 @@
 package org.smd.springBootRestAPI.controller;
 
 import java.net.URI;
-import java.util.List;
 import java.util.Optional;
 
 import javax.validation.Valid;
@@ -14,8 +13,9 @@ import org.smd.springBootRestAPI.repository.CourseRepository;
 import org.smd.springBootRestAPI.repository.TopicsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort.Direction;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -42,12 +42,16 @@ public class TopicsController {
 	@GetMapping
 	public Page<TopicDTO> list(
 				@RequestParam(required = false) String courseName, // As specific data may be requested via URL param, courseName is set as not mandatory
-				// For pagination dealing, the following params are required
-				@RequestParam Integer page, 
-				@RequestParam Integer qty
+//				For pagination dealing, the following params are required
+//				@RequestParam Integer page, 
+//				@RequestParam Integer qty,
+//				@RequestParam String sorting
+				@PageableDefault(sort = "id",direction = Direction.ASC, page = 0, size = 10) // Defines default Pageable attributes if not informed
+				Pageable pageable // Allows pageable attributes to be passed as argument. Requires attributes to be declared as Pageable definition
 			) {
 		
-		Pageable pageable = PageRequest.of(page, qty); //Allows use of data pagination
+		//Pageable pageable = PageRequest.of(page, qty, Direction.DESC, sorting); // Allows use of data pagination and orders by specified field as ascending order is fixed
+		
 
 		if (courseName == null) {
 			Page<Topic> // Method findAll(Pageable p) returns a Page object with properties about the returned page
@@ -73,10 +77,10 @@ public class TopicsController {
 	@PostMapping
 	@Transactional
 	public ResponseEntity<TopicDTO> register(@RequestBody @Valid // @Valid searches if topicForm has attribute
-																 // validation
-											TopicForm topicForm, // ResponseEntity<TopicDTO> is a Http dealer type with a specified generic
-																 // validation
-											UriComponentsBuilder uriBuilder) {
+																	// validation
+	TopicForm topicForm, // ResponseEntity<TopicDTO> is a Http dealer type with a specified generic
+							// validation
+			UriComponentsBuilder uriBuilder) {
 		Topic topic = topicForm.toTopic(courseRepository); // Passes a CourseRepository as void param from
 															// topicForm(DTO)
 		topicsRepository.save(topic);
@@ -90,28 +94,35 @@ public class TopicsController {
 											// for object representation of the created object
 				.body(new TopicDTO(topic)); // builds the body of the response
 	}
-	
+
 	@PutMapping("/{id}")
 	@Transactional
-	public ResponseEntity<TopicDTO> update(@PathVariable Long id, @RequestBody @Valid ToUpdateTopic toUpdateTopic) { // Created a new DTO for input validation
-		
+	public ResponseEntity<TopicDTO> update(@PathVariable Long id, @RequestBody @Valid ToUpdateTopic toUpdateTopic) { // Created
+																														// a
+																														// new
+																														// DTO
+																														// for
+																														// input
+																														// validation
+
 		Optional<Topic> optional = topicsRepository.findById(id);
-		
-		if(optional.isPresent()) {
-			Topic topic = toUpdateTopic.update(id, topicsRepository); // passes the id and injects a repository for Topic processing
+
+		if (optional.isPresent()) {
+			Topic topic = toUpdateTopic.update(id, topicsRepository); // passes the id and injects a repository for
+																		// Topic processing
 			return ResponseEntity // From a class that deals with HTTP response
-					.ok(new TopicDTO(topic)); // returns a 200 - OK, sending a Topic instance 
+					.ok(new TopicDTO(topic)); // returns a 200 - OK, sending a Topic instance
 		}
 		return ResponseEntity // From a class that deals with HTTP response
 				.notFound() // return a 404 - Not Found response
 				.build(); // Doesn't gives a body as response
 	}
-	
+
 	@DeleteMapping("/{id}")
 	@Transactional
 	public ResponseEntity<?> remove(@PathVariable Long id) {
 		Optional<Topic> optional = topicsRepository.findById(id);
-		if(optional.isPresent()) {
+		if (optional.isPresent()) {
 			topicsRepository.deleteById(id);
 			return ResponseEntity.ok().build();
 		}
