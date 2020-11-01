@@ -6,6 +6,7 @@ import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import org.smd.springBootRestAPI.model.Topic;
+import org.springframework.data.domain.Page;
 
 public class TopicDTO {
 	private Long id;
@@ -52,8 +53,9 @@ public class TopicDTO {
 		this.creationDate = creationDate;
 	}
 
-	public static List<TopicDTO> converter(List<Topic> topics) {
-		return topics.stream().map(TopicDTO::new).collect(Collectors.toList());
+	public static Page<TopicDTO> converter(Page<Topic> topics) {
+		//return topics.stream().map(TopicDTO::new).collect(Collectors.toList());
+		return topics.map(TopicDTO::new); //return many instances of TopicDTO
 	}
 	
 	

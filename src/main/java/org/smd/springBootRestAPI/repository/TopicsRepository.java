@@ -1,13 +1,13 @@
 package org.smd.springBootRestAPI.repository;
 
-import java.util.List;
-
 import org.smd.springBootRestAPI.model.Topic;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface TopicsRepository extends JpaRepository<Topic, Long>{
 
-	List<Topic> findByCourse_Name(String courseName);
+	Page<Topic> findByCourse_Name(String courseName, Pageable pagination);
 	
 
 }

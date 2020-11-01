@@ -13,9 +13,11 @@ import org.smd.springBootRestAPI.model.Topic;
 import org.smd.springBootRestAPI.repository.CourseRepository;
 import org.smd.springBootRestAPI.repository.TopicsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -23,7 +25,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestPart;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -38,14 +40,21 @@ public class TopicsController {
 	CourseRepository courseRepository; // Created a repository injection
 
 	@GetMapping
-	public List<TopicDTO> list(String courseName) { // As specific data may be requested via URL param, courseName is
-													// set
+	public Page<TopicDTO> list(
+				@RequestParam(required = false) String courseName, // As specific data may be requested via URL param, courseName is set as not mandatory
+				// For pagination dealing, the following params are required
+				@RequestParam Integer page, 
+				@RequestParam Integer qty
+			) {
+		
+		Pageable pageable = PageRequest.of(page, qty); //Allows use of data pagination
 
 		if (courseName == null) {
-			List<Topic> topics = topicsRepository.findAll();
+			Page<Topic> // Method findAll(Pageable p) returns a Page object with properties about the returned page
+				topics = topicsRepository.findAll(pageable); // Uses pageable as argumento for data retrieval
 			return TopicDTO.converter(topics);
 		} else {
-			List<Topic> topics = topicsRepository.findByCourse_Name(courseName);
+			Page<Topic> topics = topicsRepository.findByCourse_Name(courseName, pageable);
 			return TopicDTO.converter(topics);
 		}
 
