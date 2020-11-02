@@ -48,6 +48,7 @@ public class SecurityConfigurations extends WebSecurityConfigurerAdapter {
 			.antMatchers(HttpMethod.GET, "/topics").permitAll() // Allows access to every GET request
 			.antMatchers(HttpMethod.GET, "/topics/*").permitAll()
 			.antMatchers(HttpMethod.POST, "/auth").permitAll()
+			.antMatchers(HttpMethod.GET, "/actuator/**").permitAll()
 			.anyRequest().authenticated()
 			//.and().formLogin() // Uses spring`s default form //Prevents session to be created
 			.and().csrf().disable() // CrossSiteRequestForjure prevention (as this API has no session, there's no such problem)
