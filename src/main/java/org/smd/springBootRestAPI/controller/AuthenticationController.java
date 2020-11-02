@@ -5,6 +5,7 @@ import javax.validation.Valid;
 import org.smd.springBootRestAPI.config.security.TokenService;
 import org.smd.springBootRestAPI.controller.dto.LoginForm;
 import org.smd.springBootRestAPI.controller.dto.TokenDto;
+import org.smd.springBootRestAPI.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;

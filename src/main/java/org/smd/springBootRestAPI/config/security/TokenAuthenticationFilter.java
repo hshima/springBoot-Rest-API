@@ -7,16 +7,21 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.smd.springBootRestAPI.controller.dto.TokenDto;
+import org.smd.springBootRestAPI.model.User;
+import org.smd.springBootRestAPI.repository.UserRepository;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 public class TokenAuthenticationFilter extends OncePerRequestFilter {
 
 	private String authMethod = "Bearer ";
 	private TokenService tokenService;
-
-	public TokenAuthenticationFilter(TokenService tokenService) {
+	private UserRepository repository;
+	
+	public TokenAuthenticationFilter(TokenService tokenService, UserRepository repository) {
 		this.tokenService = tokenService;
+		this.repository = repository;
 	}
 
 	@Override
@@ -25,10 +30,19 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
 
 		String token = retrieveToken(request);
 
-		boolean authenticable = tokenService.isValidToken(token);
-		System.out.println(authenticable);
+		boolean authenticated = tokenService.isValidToken(token);
+		if (authenticated) {
+			authenticateClient(token);
+		}
 
 		filterChain.doFilter(request, response);
+	}
+
+	private void authenticateClient(String token) {
+		Long idUser = tokenService.getIdUser(token);
+		User user = repository.findById(idUser).get();
+		UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(user, null , user.getAuthorities());
+		SecurityContextHolder.getContext().setAuthentication(authentication);
 	}
 
 	private String retrieveToken(HttpServletRequest request) {

@@ -1,5 +1,6 @@
 package org.smd.springBootRestAPI.config.security;
 
+import org.smd.springBootRestAPI.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -23,6 +24,9 @@ public class SecurityConfigurations extends WebSecurityConfigurerAdapter {
 	
 	@Autowired
 	private TokenService tokenService;
+	
+	@Autowired
+	private UserRepository repository; 
 	
 	@Override
 	@Bean
@@ -48,7 +52,7 @@ public class SecurityConfigurations extends WebSecurityConfigurerAdapter {
 			//.and().formLogin() // Uses spring`s default form //Prevents session to be created
 			.and().csrf().disable() // CrossSiteRequestForjure prevention (as this API has no session, there's no such problem)
 			.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS) // applies stateless configuration
-			.and().addFilterBefore(new TokenAuthenticationFilter(tokenService), UsernamePasswordAuthenticationFilter.class)
+			.and().addFilterBefore(new TokenAuthenticationFilter(tokenService, repository), UsernamePasswordAuthenticationFilter.class)
 			;
 	}
 
