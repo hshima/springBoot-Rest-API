@@ -8,6 +8,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 @EnableWebSecurity
@@ -29,8 +30,11 @@ public class SecurityConfigurations extends WebSecurityConfigurerAdapter {
 		http.authorizeRequests()
 			.antMatchers(HttpMethod.GET, "/topics").permitAll() // Allows access to every GET request
 			.antMatchers(HttpMethod.GET, "/topics/*").permitAll()
+			.antMatchers(HttpMethod.POST, "/auth").permitAll()
 			.anyRequest().authenticated()
-			.and().formLogin() // Uses spring`s default form 
+			//.and().formLogin() // Uses spring`s default form //Prevents session to be created
+			.and().csrf().disable() // CrossSiteRequestForjure prevention (as this API has no session, there's no such problem)
+			.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS) // applies stateless configuration
 			;
 	}
 
