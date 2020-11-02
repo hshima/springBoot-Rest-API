@@ -12,6 +12,8 @@ import org.smd.springBootRestAPI.model.Topic;
 import org.smd.springBootRestAPI.repository.CourseRepository;
 import org.smd.springBootRestAPI.repository.TopicsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort.Direction;
@@ -40,6 +42,7 @@ public class TopicsController {
 	CourseRepository courseRepository; // Created a repository injection
 
 	@GetMapping
+	@Cacheable(value = "topicsList") // Allows to use cache in a defined identifier
 	public Page<TopicDTO> list(
 				@RequestParam(required = false) String courseName, // As specific data may be requested via URL param, courseName is set as not mandatory
 //				For pagination dealing, the following params are required
@@ -47,7 +50,7 @@ public class TopicsController {
 //				@RequestParam Integer qty,
 //				@RequestParam String sorting
 				@PageableDefault(sort = "id",direction = Direction.ASC, page = 0, size = 10) // Defines default Pageable attributes if not informed
-				Pageable pageable // Allows pageable attributes to be passed as argument. Requires attributes to be declared as Pageable definition
+					Pageable pageable // Allows pageable attributes to be passed as argument. Requires attributes to be declared as Pageable definition
 			) {
 		
 		//Pageable pageable = PageRequest.of(page, qty, Direction.DESC, sorting); // Allows use of data pagination and orders by specified field as ascending order is fixed
@@ -76,6 +79,7 @@ public class TopicsController {
 
 	@PostMapping
 	@Transactional
+	@CacheEvict(value = "topicsList", allEntries = true)
 	public ResponseEntity<TopicDTO> register(@RequestBody @Valid // @Valid searches if topicForm has attribute
 																	// validation
 	TopicForm topicForm, // ResponseEntity<TopicDTO> is a Http dealer type with a specified generic
@@ -97,6 +101,7 @@ public class TopicsController {
 
 	@PutMapping("/{id}")
 	@Transactional
+	@CacheEvict(value = "topicsList", allEntries = true)
 	public ResponseEntity<TopicDTO> update(@PathVariable Long id, @RequestBody @Valid ToUpdateTopic toUpdateTopic) { // Created
 																														// a
 																														// new
@@ -120,6 +125,7 @@ public class TopicsController {
 
 	@DeleteMapping("/{id}")
 	@Transactional
+	@CacheEvict(value = "topicsList", allEntries = true)
 	public ResponseEntity<?> remove(@PathVariable Long id) {
 		Optional<Topic> optional = topicsRepository.findById(id);
 		if (optional.isPresent()) {
