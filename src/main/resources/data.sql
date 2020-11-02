@@ -1,4 +1,4 @@
-INSERT INTO User(name, email, password) VALUES('Aluno', 'aluno@email.com', '123456');
+INSERT INTO User(name, email, password) VALUES('Aluno', 'aluno@email.com', '$2a$10$Jlaffv1lrjIReA3IzIRxUOJLOkYqWUZ59OPL5Gfv0vGDdbUGEAYhS');
 
 INSERT INTO Course(name, category) VALUES('Spring Boot', 'Programação');
 INSERT INTO Course(name, category) VALUES('HTML 5', 'Front-end');
