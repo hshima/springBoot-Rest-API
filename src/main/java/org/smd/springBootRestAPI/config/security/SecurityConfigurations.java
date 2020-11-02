@@ -12,6 +12,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @EnableWebSecurity
 @Configuration
@@ -19,6 +20,9 @@ public class SecurityConfigurations extends WebSecurityConfigurerAdapter {
 
 	@Autowired
 	private AuthenticationService autenticationService;
+	
+	@Autowired
+	private TokenService tokenService;
 	
 	@Override
 	@Bean
@@ -44,6 +48,7 @@ public class SecurityConfigurations extends WebSecurityConfigurerAdapter {
 			//.and().formLogin() // Uses spring`s default form //Prevents session to be created
 			.and().csrf().disable() // CrossSiteRequestForjure prevention (as this API has no session, there's no such problem)
 			.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS) // applies stateless configuration
+			.and().addFilterBefore(new TokenAuthenticationFilter(tokenService), UsernamePasswordAuthenticationFilter.class)
 			;
 	}
 

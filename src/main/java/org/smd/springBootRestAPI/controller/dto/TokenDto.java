@@ -1,5 +1,6 @@
 package org.smd.springBootRestAPI.controller.dto;
 
+import io.jsonwebtoken.Jwts;
 import lombok.Getter;
 
 

@@ -2,9 +2,9 @@ package org.smd.springBootRestAPI.controller;
 
 import javax.validation.Valid;
 
+import org.smd.springBootRestAPI.config.security.TokenService;
 import org.smd.springBootRestAPI.controller.dto.LoginForm;
 import org.smd.springBootRestAPI.controller.dto.TokenDto;
-import org.smd.springBootRestAPI.security.TokenService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -35,7 +35,7 @@ public class AuthenticationController {
 		try {
 			Authentication authentication = manager.authenticate(loginData);
 			String token = tokenService.gerarToken(authentication);
-			//System.out.println(token);
+			System.out.println(token);
 			return ResponseEntity.ok(new TokenDto(token, "Bearer"));	// Delivers a token to be used in the body. build() is not required in this case
 		} catch(AuthenticationException e) {
 			return ResponseEntity.badRequest().build();
