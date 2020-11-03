@@ -50,6 +50,7 @@ public class SecurityConfigurations extends WebSecurityConfigurerAdapter {
 			.antMatchers(HttpMethod.POST, "/auth").permitAll()
 			.antMatchers(HttpMethod.GET, "/actuator/**").permitAll()
 			.anyRequest().authenticated()
+			
 			//.and().formLogin() // Uses spring`s default form //Prevents session to be created
 			.and().csrf().disable() // CrossSiteRequestForjure prevention (as this API has no session, there's no such problem)
 			.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS) // applies stateless configuration
@@ -60,7 +61,9 @@ public class SecurityConfigurations extends WebSecurityConfigurerAdapter {
 	// Static resources (css, js, images, etc...) 
 	@Override
 	public void configure(WebSecurity web) throws Exception {
-
+		web
+		.ignoring()
+		.antMatchers("/**.html", "/v2/api-docs", "/webjars/**", "/configuration/**", "/swagger-resources/**");
 	}
 	
 }
