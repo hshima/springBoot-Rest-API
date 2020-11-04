@@ -1,9 +1,10 @@
-package org.smd.springBootRestAPI.dto;
+package org.smd.springBootRestAPI.controller.dto;
 
 public class FormErrorDTO { // translates kind of error that are sent
-	
+
 	private String field;
 	private String error;
+
 	public FormErrorDTO(String field, String error) {
 		super();
 		this.field = field;
